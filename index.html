@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="zh" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&amp;family=ZCOOL+XiaoWei&amp;display=swap" rel="stylesheet">
+  <style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Noto Sans SC',sans-serif}
+.app-wrap{height:100%;width:100%;overflow-y:auto;background:#0a1628;scrollbar-gutter:stable}
+.glass{background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1)}
+.glow-green{box-shadow:0 0 30px rgba(74,222,128,0.15)}
+.glow-blue{box-shadow:0 0 30px rgba(96,165,250,0.15)}
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-card{transition:all .3s ease}
+.q-card:hover{transform:translateY(-2px)}
+input[type="text"],textarea{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#e2e8f0;border-radius:8px;padding:10px 14px;width:100%;font-family:'Noto Sans SC',sans-serif;transition:border-color .2s}
+input[type="text"]:focus,textarea:focus{outline:none;border-color:#4ade80}
+textarea{resize:vertical;min-height:80px}
+.choice-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#cbd5e1;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s;font-family:'Noto Sans SC',sans-serif;font-size:14px}
+.choice-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.25)}
+.choice-btn.selected{background:rgba(74,222,128,0.15);border-color:#4ade80;color:#4ade80}
+.choice-btn.correct{background:rgba(74,222,128,0.2);border-color:#4ade80;color:#4ade80}
+.choice-btn.wrong{background:rgba(248,113,113,0.2);border-color:#f87171;color:#f87171}
+.submit-btn{background:linear-gradient(135deg,#4ade80,#22d3ee);color:#0a1628;font-weight:600;padding:10px 28px;border-radius:10px;border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:15px;transition:all .2s}
+.submit-btn:hover{transform:scale(1.03);box-shadow:0 0 20px rgba(74,222,128,0.3)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.back-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#94a3b8;padding:8px 20px;border-radius:8px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s}
+.back-btn:hover{background:rgba(255,255,255,0.12);color:#e2e8f0}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:500}
+.tag-fill{background:rgba(74,222,128,0.15);color:#4ade80}
+.tag-choice{background:rgba(96,165,250,0.15);color:#60a5fa}
+.result-correct{color:#4ade80}
+.result-wrong{color:#f87171}
+.group-btn{position:relative;overflow:hidden;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px 20px;cursor:pointer;transition:all .3s;text-align:center}
+.group-btn:hover{background:rgba(255,255,255,0.08);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;border:1px solid rgba(74,222,128,0.3);color:#4ade80;padding:12px 24px;border-radius:12px;font-size:14px;z-index:999;transition:transform .3s ease;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div class="app-wrap" id="app">
+   <!-- HOME -->
+   <div id="page-home" class="fade-in" style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px">
+    <div style="text-align:center;margin-bottom:48px">
+     <div style="font-size:48px;margin-bottom:12px">
+      🌿
+     </div>
+     <h1 id="main-title" style="font-family:'ZCOOL XiaoWei',serif;font-size:clamp(28px,5vw,42px);color:#e2e8f0;margin-bottom:8px">社区菜园练习</h1>
+     <p style="color:#64748b;font-size:15px">看视频、仔细聆听，完成练习</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:600px;width:100%">
+     <button onclick="showPage('exercise1')" class="glass glow-green" style="flex:1;min-width:240px;border-radius:20px;padding:32px 24px;cursor:pointer;transition:all .3s;text-align:left" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="font-size:32px;margin-bottom:12px">
+       📝
+      </div><h2 style="color:#4ade80;font-size:18px;font-weight:600;margin-bottom:6px">练习一</h2><p style="color:#94a3b8;font-size:13px">填充题 &amp; 选择题</p></button> <button onclick="showPage('exercise2')" class="glass glow-blue" style="flex:1;min-width:240px;border-radius:20px;padding:32px 24px;cursor:pointer;transition:all .3s;text-align:left" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="font-size:32px;margin-bottom:12px">
+       💬
+      </div><h2 style="color:#60a5fa;font-size:18px;font-weight:600;margin-bottom:6px">练习二</h2><p style="color:#94a3b8;font-size:13px">简答题（分组）</p></button> <button onclick="showPage('exercise3')" class="glass" style="flex:1;min-width:240px;border-radius:20px;padding:32px 24px;cursor:pointer;transition:all .3s;text-align:left;background:rgba(167,139,250,0.1);box-shadow:0 0 30px rgba(167,139,250,0.15)" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="font-size:32px;margin-bottom:12px">
+       🎤
+      </div><h2 style="color:#a78bfa;font-size:18px;font-weight:600;margin-bottom:6px">练习三</h2><p style="color:#94a3b8;font-size:13px">轮到你说一说</p></button>
+    </div>
+   </div><!-- EXERCISE 1 -->
+   <div id="page-exercise1" style="display:none;padding:24px 16px;max-width:720px;margin:0 auto" class="fade-in">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+     <button class="back-btn" onclick="showPage('home')"><i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle"></i> 返回</button>
+     <h2 style="color:#e2e8f0;font-size:20px;font-weight:600">练习一：填充题 &amp; 选择题</h2>
+    </div>
+    <p style="color:#64748b;font-size:13px;margin-bottom:24px">看视频、仔细聆听，完成下列填充题及选择题。</p>
+    <div id="ex1-questions"></div>
+    <div style="text-align:center;margin:32px 0">
+     <button class="submit-btn" id="ex1-submit" onclick="checkExercise1()">提交答案</button>
+    </div>
+    <div id="ex1-score" style="text-align:center;margin-bottom:32px"></div>
+   </div><!-- EXERCISE 2 - group select -->
+   <div id="page-exercise2" style="display:none;padding:24px 16px;max-width:720px;margin:0 auto" class="fade-in">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+     <button class="back-btn" onclick="showPage('home')"><i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle"></i> 返回</button>
+     <h2 style="color:#e2e8f0;font-size:20px;font-weight:600">练习二：简答题</h2>
+    </div>
+    <p style="color:#94a3b8;font-size:14px;margin-bottom:28px">请选择你的组别：</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px" id="group-grid">
+     <button class="group-btn" onclick="showGroup(1)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🌱
+      </div>
+      <div style="color:#4ade80;font-weight:600;font-size:16px">
+       第一组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       羊角豆
+      </div></button> <button class="group-btn" onclick="showGroup(2)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🦋
+      </div>
+      <div style="color:#60a5fa;font-weight:600;font-size:16px">
+       第二组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       蝶豆花
+      </div></button> <button class="group-btn" onclick="showGroup(3)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🌶️
+      </div>
+      <div style="color:#f87171;font-weight:600;font-size:16px">
+       第三组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       辣椒
+      </div></button> <button class="group-btn" onclick="showGroup(4)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🍃
+      </div>
+      <div style="color:#a78bfa;font-weight:600;font-size:16px">
+       第四组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       班兰叶
+      </div></button>
+    </div>
+   </div><!-- EXERCISE 2 - group questions -->
+   <div id="page-group" style="display:none;padding:24px 16px;max-width:720px;margin:0 auto" class="fade-in">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+     <button class="back-btn" onclick="showPage('exercise2')"><i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle"></i> 返回选组</button>
+     <h2 id="group-title" style="color:#e2e8f0;font-size:20px;font-weight:600"></h2>
+    </div>
+    <div id="group-content"></div>
+    <div style="text-align:center;margin:32px 0">
+     <button class="submit-btn" id="group-submit" onclick="submitGroup()">提交答案</button>
+    </div>
+   </div><!-- EXERCISE 3 - group select -->
+   <div id="page-exercise3" style="display:none;padding:24px 16px;max-width:720px;margin:0 auto" class="fade-in">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+     <button class="back-btn" onclick="showPage('home')"><i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle"></i> 返回</button>
+     <h2 style="color:#e2e8f0;font-size:20px;font-weight:600">练习三：轮到你说一说</h2>
+    </div>
+    <p style="color:#94a3b8;font-size:14px;margin-bottom:28px">请选择你的组别，观察图片并按照提示进行口头描述：</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px" id="group-grid-ex3">
+     <button class="group-btn" onclick="showExercise3(1)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🏞️
+      </div>
+      <div style="color:#4ade80;font-weight:600;font-size:16px">
+       第一组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       Hillock Park
+      </div></button> <button class="group-btn" onclick="showExercise3(2)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🌶️
+      </div>
+      <div style="color:#60a5fa;font-weight:600;font-size:16px">
+       第二组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       Whampoa Park
+      </div></button> <button class="group-btn" onclick="showExercise3(3)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🌿
+      </div>
+      <div style="color:#f87171;font-weight:600;font-size:16px">
+       第三组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       Bidadari Park
+      </div></button> <button class="group-btn" onclick="showExercise3(4)">
+      <div style="font-size:28px;margin-bottom:8px">
+       🌸
+      </div>
+      <div style="color:#a78bfa;font-weight:600;font-size:16px">
+       第四组
+      </div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px">
+       Waterfront II
+      </div></button>
+    </div>
+   </div><!-- EXERCISE 3 - speaking task -->
+   <div id="page-ex3-task" style="display:none;padding:24px 16px;max-width:720px;margin:0 auto" class="fade-in">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+     <button class="back-btn" onclick="showPage('exercise3')"><i data-lucide="arrow-left" style="width:16px;height:16px;display:inline-block;vertical-align:middle"></i> 返回选组</button>
+     <h2 id="ex3-group-title" style="color:#e2e8f0;font-size:20px;font-weight:600"></h2>
+    </div>
+    <div id="ex3-content"></div>
+    <div style="text-align:center;margin:32px 0">
+     <button class="submit-btn" id="ex3-submit" onclick="submitExercise3()">提交录音</button>
+    </div>
+   </div>
+  </div>
+  <script>
+// ===== SDK INIT =====
+const defaultConfig = {
+  main_title: '社区菜园练习',
+  background_color: '#0a1628',
+  surface_color: 'rgba(255,255,255,0.06)',
+  text_color: '#e2e8f0',
+  primary_action_color: '#4ade80',
+  secondary_action_color: '#60a5fa'
+};
+
+
+
+// Data SDK - write only
+
+// ===== NAVIGATION =====
+function showPage(page) {
+  ['home','exercise1','exercise2','group','exercise3','ex3-task'].forEach(p => {
+    document.getElementById('page-'+p).style.display = 'none';
+  });
+  const el = document.getElementById('page-'+page);
+  el.style.display = 'block';
+  el.classList.remove('fade-in');
+  void el.offsetWidth;
+  el.classList.add('fade-in');
+  document.querySelector('.app-wrap').scrollTop = 0;
+  if(page==='exercise1' && !ex1Built) buildExercise1();
+  lucide.createIcons();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ===== EXERCISE 1 DATA =====
+const ex1Data = [
+  {id:'s1',type:'label',text:'【开场 0:00–0:35】大家好！我是莎莎。最近，我在社交媒体上看到我们家附近的社区菜园，上了新闻。今天，就让我带领大家一起去参观这个社区菜园！'},
+  {id:'s2',type:'label',text:'【菜园全貌 0:35–1:00】这里就是我们的社区菜园了！一眼望过去，菜园里的植物很茂盛，一片______的，真好看！'},
+  {id:'f1',type:'fill',prompt:'菜园里的植物很茂盛，一片______的',answer:'绿油油'},
+  {id:'s3',type:'label',text:'【土壤与种植 1:00–1:30】空气好清新！还可以闻到一点______。菜园里有______的花床，还搭了许多架子。'},
+  {id:'f2',type:'fill',prompt:'还可以闻到一点______',answer:'淡淡的泥土的芬芳'},
+  {id:'f3',type:'fill',prompt:'菜园里有______的花床',answer:'排列整齐'},
+  {id:'c1',type:'choice',prompt:'这里从哪两方面进行描述？（选两项）',options:['形态','色彩','声音','气味'],answers:['形态','气味']},
+  {id:'s4',type:'label',text:'【葱 1:30–2:05】"阿姨，您是在施肥吗？""是的，这是蔬菜的幼苗，我们每个星期都要施肥。""辛苦您了，这真不简单啊！""不会""欸！那______的是什么蔬菜？"哦！原来是葱！'},
+  {id:'f4',type:'fill',prompt:'那______的是什么蔬菜？',answer:'颜色翠绿'},
+  {id:'s5',type:'label',text:'【百香果 2:05–2:30】这是百香果！它______的，像绿色的______，这果子，还挺重的呢！'},
+  {id:'f5',type:'fill',prompt:'它______的',answer:'圆滚滚'},
+  {id:'f6',type:'fill',prompt:'像绿色的______',answer:'小皮球'},
+  {id:'c2',type:'choice',prompt:'百香果的描述从哪方面进行？用了什么修辞手法？（各选一项）',options:['形态','色彩','声音','气味'],answers:['形态'],group:'c2a'},
+  {id:'c2b',type:'choice',prompt:'修辞手法：',options:['比喻','比拟','排比'],answers:['比喻'],group:'c2b'},
+  {id:'s6',type:'label',text:'【羊角豆 2:30–3:00】你们看！这些羊角豆像不像我们______呢！'},
+  {id:'f7',type:'fill',prompt:'这些羊角豆像不像我们______呢',answer:'美丽细长的手指'},
+  {id:'s7',type:'label',text:'【蝶豆花 3:00–3:35】好美啊！这些蓝色的蝶豆花在一片绿叶中特别亮眼，它们就像______在翩翩起舞！'},
+  {id:'f8',type:'fill',prompt:'它们就像______在翩翩起舞',answer:'一只只美丽的蝴蝶'},
+  {id:'c3',type:'choice',prompt:'蝶豆花的描述从哪方面进行？（选一项）',options:['形态','色彩','声音','气味'],answers:['色彩'],group:'c3a'},
+  {id:'c3b',type:'choice',prompt:'用了什么修辞手法？',options:['比喻','比拟','排比'],answers:['比喻'],group:'c3b'},
+  {id:'s8',type:'label',text:'【辣椒 3:35–3:55】这是我最喜欢的辣椒！看那______的颜色，吃起来一定很辣！'},
+  {id:'f9',type:'fill',prompt:'看那______的颜色',answer:'鲜红'},
+  {id:'c4',type:'choice',prompt:'辣椒的描述从哪两方面进行？（选两项）',options:['形态','色彩','声音','气味'],answers:['色彩','气味']},
+  {id:'s9',type:'label',text:'【班兰叶 3:55–4:01】这是什么？有一股______，啊！原来是班兰叶！我妈妈常常用它来煮甜品。'},
+  {id:'f10',type:'fill',prompt:'有一股______',answer:'淡淡的清香'},
+];
+
+let ex1Built = false;
+let ex1Answers = {};
+let ex1Checked = false;
+
+function buildExercise1() {
+  ex1Built = true;
+  const container = document.getElementById('ex1-questions');
+  let html = '';
+  let qNum = 0;
+  ex1Data.forEach(item => {
+    if(item.type === 'label') {
+      html += `<div class="glass q-card" style="border-radius:12px;padding:16px 18px;margin-bottom:12px"><p style="color:#94a3b8;font-size:14px;line-height:1.8">${item.text}</p></div>`;
+    } else if(item.type === 'fill') {
+      qNum++;
+      html += `<div class="glass q-card" style="border-radius:12px;padding:16px 18px;margin-bottom:12px" id="q-${item.id}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="tag tag-fill">填充题</span><span style="color:#64748b;font-size:12px">第${qNum}题</span></div>
+        <p style="color:#cbd5e1;font-size:14px;margin-bottom:10px">${item.prompt}</p>
+        <input type="text" id="input-${item.id}" placeholder="请填写答案" oninput="ex1Answers['${item.id}']=this.value">
+        <div id="fb-${item.id}" style="margin-top:8px;font-size:13px;display:none"></div>
+      </div>`;
+    } else if(item.type === 'choice') {
+      qNum++;
+      const multi = item.answers.length > 1;
+      html += `<div class="glass q-card" style="border-radius:12px;padding:16px 18px;margin-bottom:12px" id="q-${item.id}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="tag tag-choice">选择题</span><span style="color:#64748b;font-size:12px">第${qNum}题${multi?' (多选)':''}</span></div>
+        <p style="color:#cbd5e1;font-size:14px;margin-bottom:12px">${item.prompt}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="opts-${item.id}">
+          ${item.options.map(o => `<button class="choice-btn" data-qid="${item.id}" data-val="${o}" onclick="toggleChoice('${item.id}','${o}',${multi})">${o}</button>`).join('')}
+        </div>
+        <div id="fb-${item.id}" style="margin-top:8px;font-size:13px;display:none"></div>
+      </div>`;
+      if(!ex1Answers[item.id]) ex1Answers[item.id] = [];
+    }
+  });
+  container.innerHTML = html;
+  lucide.createIcons();
+}
+
+function toggleChoice(qid, val, multi) {
+  if(ex1Checked) return;
+  if(!ex1Answers[qid]) ex1Answers[qid] = [];
+  const arr = ex1Answers[qid];
+  const idx = arr.indexOf(val);
+  if(idx > -1) arr.splice(idx,1); else { if(!multi) arr.length=0; arr.push(val); }
+  document.querySelectorAll(`[data-qid="${qid}"]`).forEach(btn => {
+    btn.classList.toggle('selected', arr.includes(btn.dataset.val));
+  });
+}
+
+function checkExercise1() {
+  if(ex1Checked) return;
+  ex1Checked = true;
+  let correct = 0, total = 0;
+  ex1Data.forEach(item => {
+    if(item.type === 'fill') {
+      total++;
+      const val = (ex1Answers[item.id]||'').trim();
+      const fb = document.getElementById('fb-'+item.id);
+      fb.style.display = 'block';
+      if(val === item.answer) {
+        correct++;
+        fb.innerHTML = `<span class="result-correct">✓ 正确！</span>`;
+      } else {
+        fb.innerHTML = `<span class="result-wrong">✗ 正确答案：${item.answer}</span>`;
+      }
+    } else if(item.type === 'choice') {
+      total++;
+      const sel = ex1Answers[item.id]||[];
+      const fb = document.getElementById('fb-'+item.id);
+      fb.style.display = 'block';
+      const isCorrect = item.answers.length===sel.length && item.answers.every(a=>sel.includes(a));
+      if(isCorrect) { correct++; fb.innerHTML=`<span class="result-correct">✓ 正确！</span>`; }
+      else { fb.innerHTML=`<span class="result-wrong">✗ 正确答案：${item.answers.join('、')}</span>`; }
+      document.querySelectorAll(`[data-qid="${item.id}"]`).forEach(btn => {
+        if(item.answers.includes(btn.dataset.val)) btn.classList.add('correct');
+        else if(sel.includes(btn.dataset.val)) btn.classList.add('wrong');
+      });
+    }
+  });
+  document.getElementById('ex1-score').innerHTML = `<div class="glass" style="display:inline-block;border-radius:12px;padding:16px 28px"><span style="color:#e2e8f0;font-size:18px;font-weight:600">${correct}/${total}</span><span style="color:#64748b;font-size:14px;margin-left:8px">答对</span></div>`;
+  document.getElementById('ex1-submit').disabled = true;
+}
+
+// ===== EXERCISE 2 =====
+let currentGroup = 0;
+const groupData = {
+  1: {
+    emoji:'🌱',color:'#4ade80',title:'第一组 — 羊角豆',
+    intro:'请在描述"细长的羊角豆"的部分，加入1-2句情感句子表达内心感受，让描述更生动、更能产生共鸣。',
+    original:'你们看！这些羊角豆像不像我们<strong>美丽细长的手指</strong>呢！',
+    fields:[{id:'g1_emotion',label:'写下情感句',placeholder:'请写下1-2句情感句子……'}]
+  },
+  2: {
+    emoji:'🦋',color:'#60a5fa',title:'第二组 — 蝶豆花',
+    intro:'请在描述"蓝色的蝶豆花"的部分，加入1-2句情感句子表达内心感受，让描述更生动、更能产生共鸣。',
+    original:'好美啊！这些蓝色的蝶豆花在一片绿叶中特别亮眼，它们就像<strong>一只只美丽的蝴蝶</strong>在翩翩起舞！',
+    fields:[{id:'g2_emotion',label:'写下情感句',placeholder:'请写下1-2句情感句子……'}]
+  },
+  3: {
+    emoji:'🌶️',color:'#f87171',title:'第三组 — 辣椒',
+    intro:'请在描述"鲜红的辣椒"的部分，复述一遍莎莎如何表达她的感受，再加入1句情感句子来让描述更生动、更能产生共鸣。',
+    original:'这是我最喜欢的辣椒！看那<strong>鲜红</strong>的颜色，吃起来一定很辣！',
+    fields:[{id:'g3_retell',label:'莎莎说',placeholder:'复述莎莎的感受……'},{id:'g3_emotion',label:'加入多一句情感句',placeholder:'请写下1句情感句子……'}]
+  },
+  4: {
+    emoji:'🍃',color:'#a78bfa',title:'第四组 — 班兰叶',
+    intro:'请在描述"清香的班兰叶"的部分，复述一遍莎莎如何表达她的感受，再加入1句情感句子来让描述更生动、更能产生共鸣。',
+    original:'这是什么？有一股<strong>淡淡的清香</strong>，啊！原来是班兰叶！',
+    fields:[{id:'g4_retell',label:'莎莎说',placeholder:'复述莎莎的感受……'},{id:'g4_emotion',label:'加入多一句情感句',placeholder:'请写下1句情感句子……'}]
+  }
+};
+
+function showGroup(n) {
+  currentGroup = n;
+  showPage('group');
+  const g = groupData[n];
+  document.getElementById('group-title').innerHTML = `<span style="margin-right:6px">${g.emoji}</span>${g.title}`;
+  const c = document.getElementById('group-content');
+  let html = `<div class="glass" style="border-radius:14px;padding:20px;margin-bottom:16px">
+    <p style="color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:14px">${g.intro}</p>
+    <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${g.color};padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:20px">
+      <p style="color:#64748b;font-size:12px;margin-bottom:4px">原句：</p>
+      <p style="color:#cbd5e1;font-size:14px;line-height:1.8">${g.original}</p>
+    </div>`;
+  g.fields.forEach(f => {
+    html += `<div style="margin-bottom:16px">
+      <label style="color:${g.color};font-size:13px;font-weight:500;display:block;margin-bottom:6px">${f.label}：</label>
+      <textarea id="${f.id}" placeholder="${f.placeholder}"></textarea>
+    </div>`;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+  document.getElementById('group-submit').disabled = false;
+}
+
+async function submitGroup() {
+  const g = groupData[currentGroup];
+  const btn = document.getElementById('group-submit');
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+  for(const f of g.fields) {
+    const val = document.getElementById(f.id).value.trim();
+    if(!val) { showToast('请填写所有答案后再提交'); btn.disabled=false; btn.textContent='提交答案'; return; }
+    const result = await window.dataSdk.create({
+      exercise_type: 'short_answer',
+      group_number: currentGroup,
+      question_id: f.id,
+      answer_text: val,
+      submitted_at: new Date().toISOString()
+    });
+    if(result.isError) { showToast('提交失败，请重试'); btn.disabled=false; btn.textContent='提交答案'; return; }
+  }
+  btn.textContent = '✓ 已提交';
+  showToast('提交成功！');
+}
+
+// ===== EXERCISE 3 =====
+let currentEx3Group = 0;
+const ex3Data = {
+  1: {
+    emoji:'🏞️',color:'#4ade80',title:'第一组 — Hillock Park',
+    image:'q1.jpeg',
+    intro:'从两个方面描述这个场景【形态、色彩、声音、气味】',
+    example:'我经过邻里菜园，看到那里种满了百香果。我走近一看，它们的外形圆滚滚的，外皮是绿绿的，像一个绿色的小皮球，真可爱！',
+    template:'你可以说：我经过________，看到__________。走近一看，看到______________，就像__________________'
+  },
+  2: {
+    emoji:'🌶️',color:'#60a5fa',title:'第二组 — Whampoa Park',
+    image:'q2.jpeg',
+    intro:'从两个方面描述这个场景【形态、色彩、声音、气味】',
+    example:'这是我最喜欢的辣椒！看那鲜红的颜色，还有闻起来刺鼻的辣味，吃起来一定很过瘾！你是不是也像我一样，喜欢在食物里加一些辣椒呢？',
+    template:'你可以说：这是________。看__________，还有______________。在这里一定_____________！你是不是也喜欢__________________'
+  },
+  3: {
+    emoji:'🌿',color:'#f87171',title:'第三组 — Bidadari Park',
+    image:'q3.jpeg',
+    intro:'从至少一个方面+情感句来描述这个场景【形态、色彩、声音、气味】',
+    example:'我家楼下种了很多班兰叶，每次经过，就能闻到有一股淡淡的清香。啊！天气热的时候，闻到这股清香，就像马上来喝一碗班兰叶清汤！',
+    template:'你可以说：（哪里）__________有一____________________。每次经过，就能______________。啊！__________________________'
+  },
+  4: {
+    emoji:'🌸',color:'#a78bfa',title:'第四组 — Waterfront II @Northshore',
+    image:'q4.jpeg',
+    intro:'从至少一个方面+修辞来描述这个场景【形态、色彩、声音、气味】',
+    example:'我家楼下的花园非常漂亮！那里种满了蓝色的蝶豆花，它们在一片绿叶中特别亮眼，就像一只只美丽的蝴蝶在翩翩起舞！',
+    template:'你可以说：（感叹）__________。那里有____________________，它/它们______________，就像__________________'
+  }
+};
+
+function showExercise3(n) {
+  currentEx3Group = n;
+  showPage('ex3-task');
+  const e = ex3Data[n];
+  document.getElementById('ex3-group-title').innerHTML = `<span style="margin-right:6px">${e.emoji}</span>${e.title}`;
+  const c = document.getElementById('ex3-content');
+  let html = `<div class="glass" style="border-radius:14px;padding:20px;margin-bottom:16px">
+    <img src="${e.image}" alt="Scene for group ${n}" loading="lazy" onerror="console.error('Image failed to load:',this.src);this.style.background='#e5e7eb';this.alt='Image unavailable';" style="width:100%;height:300px;object-fit:cover;border-radius:10px;margin-bottom:16px;display:block">
+    <p style="color:#94a3b8;font-size:13px;margin-bottom:12px;font-weight:500">📌 任务描述</p>
+    <p style="color:#cbd5e1;font-size:14px;line-height:1.8;margin-bottom:16px">${e.intro}</p>
+    <div style="background:rgba(255,255,255,0.04);border-left:3px solid ${e.color};padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px">
+      <p style="color:#64748b;font-size:12px;margin-bottom:6px">📝 例子：</p>
+      <p style="color:#cbd5e1;font-size:13px;line-height:1.7">${e.example}</p>
+    </div>
+    <div style="background:rgba(${e.color},0.05);border-left:3px solid ${e.color};padding:12px 16px;border-radius:0 8px 8px 0">
+      <p style="color:${e.color};font-size:12px;margin-bottom:6px;font-weight:500">💡 参考框架：</p>
+      <p style="color:#cbd5e1;font-size:13px;line-height:1.7;font-family:monospace">${e.template}</p>
+    </div>
+    <div style="margin-top:16px">
+      <label style="color:${e.color};font-size:13px;font-weight:500;display:block;margin-bottom:8px">🎤 你的描述：</label>
+      <textarea id="ex3_answer" placeholder="请按照提示进行口头描述，然后将你的话写下来……" style="min-height:120px"></textarea>
+    </div>
+  </div>`;
+  c.innerHTML = html;
+  document.getElementById('ex3-submit').disabled = false;
+  document.getElementById('ex3-submit').textContent = '提交录音';
+}
+
+async function submitExercise3() {
+  const answer = document.getElementById('ex3_answer').value.trim();
+  if(!answer) {
+    showToast('请先完成你的描述');
+    return;
+  }
+  const btn = document.getElementById('ex3-submit');
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+  const result = await window.dataSdk.create({
+    exercise_type: 'speaking_practice',
+    group_number: currentEx3Group,
+    question_id: `ex3_group${currentEx3Group}`,
+    answer_text: answer,
+    submitted_at: new Date().toISOString()
+  });
+  if(result.isError) {
+    showToast('提交失败，请重试');
+    btn.disabled = false;
+    btn.textContent = '提交录音';
+    return;
+  }
+  btn.textContent = '✓ 已提交';
+  showToast('提交成功！');
+}
+</script>
+</html>

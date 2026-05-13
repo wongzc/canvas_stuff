@@ -186,9 +186,9 @@ textarea{resize:vertical;min-height:80px}
      <h2 id="ex3-group-title" style="color:#e2e8f0;font-size:20px;font-weight:600"></h2>
     </div>
     <div id="ex3-content"></div>
-    <div style="text-align:center;margin:32px 0">
+    <!-- <div style="text-align:center;margin:32px 0">
      <button class="submit-btn" id="ex3-submit" onclick="submitExercise3()">提交录音</button>
-    </div>
+    </div> -->
    </div>
   </div>
   <script>
@@ -466,12 +466,12 @@ function showExercise3(n) {
     </div>
     <div style="margin-top:16px">
       <label style="color:${e.color};font-size:13px;font-weight:500;display:block;margin-bottom:8px">🎤 你的描述：</label>
-      <textarea id="ex3_answer" placeholder="请按照提示进行口头描述，然后将你的话写下来……" style="min-height:120px"></textarea>
+      <textarea id="ex3_answer" placeholder="请按照提示进行口头描述，可以在这里写下笔记……" style="min-height:120px"></textarea>
     </div>
   </div>`;
   c.innerHTML = html;
   document.getElementById('ex3-submit').disabled = false;
-  document.getElementById('ex3-submit').textContent = '提交录音';
+  // document.getElementById('ex3-submit').textContent = '提交录音';
 }
 
 async function submitExercise3() {

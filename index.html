@@ -212,7 +212,7 @@ function showPage(page) {
     document.getElementById('page-'+p).style.display = 'none';
   });
   const el = document.getElementById('page-'+page);
-  el.style.display = 'block';
+  el.style.display = page === 'home' ? 'flex' : 'block';
   el.classList.remove('fade-in');
   void el.offsetWidth;
   el.classList.add('fade-in');
